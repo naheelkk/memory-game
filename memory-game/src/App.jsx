@@ -4,7 +4,9 @@ import MemoryCard from "./components/MemoryCard";
 
 export default function App() {
   const [isGameOn, setIsGameOn] = useState(false);
-
+  const [emojisData,setEmojisData] = useState([]);
+  console.log(emojisData);
+  
   async function startGame(e) {
     e.preventDefault();
     //fetching
@@ -15,12 +17,14 @@ export default function App() {
       if (!res.ok) {
         console.log("Not a Success");
         throw new Error("Couldn't fetch 'em")
-      } else {
-        console.log("Success");
+      }
         const data = await res.json();
         console.log(data);
+        let dataSample = data.slice(0,5)
+        setEmojisData(dataSample)
+        
         setIsGameOn(true);
-      }
+      
     } catch (e) {
       console.log(e);
     }
@@ -34,7 +38,7 @@ export default function App() {
     <main>
       <h1>Memory</h1>
       {!isGameOn && <Form handleSubmit={startGame} />}
-      {isGameOn && <MemoryCard handleClick={turnCard} />}
+      {isGameOn && <MemoryCard handleClick={turnCard} data = {emojisData} />}
     </main>
   );
 }
