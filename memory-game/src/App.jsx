@@ -4,9 +4,9 @@ import MemoryCard from "./components/MemoryCard";
 
 export default function App() {
   const [isGameOn, setIsGameOn] = useState(false);
-  const [emojisData,setEmojisData] = useState([]);
+  const [emojisData, setEmojisData] = useState([]);
   console.log(emojisData);
-  
+
   async function startGame(e) {
     e.preventDefault();
     //fetching
@@ -16,18 +16,50 @@ export default function App() {
       );
       if (!res.ok) {
         console.log("Not a Success");
-        throw new Error("Couldn't fetch 'em")
+        throw new Error("Couldn't fetch 'em");
       }
-        const data = await res.json();
-        console.log(data);
-        let dataSample = data.slice(0,5)
-        setEmojisData(dataSample)
-        
-        setIsGameOn(true);
-      
+      const data = await res.json();
+      const dataSlice = getDataSlice(data);
+      const emojisArray = getEmojisArray(dataSlice);
+      // console.log(getRandomIndices(data));
+
+      setEmojisData(emojisArray);
+
+      setIsGameOn(true);
     } catch (e) {
       console.log(e);
     }
+  }
+
+  function getRandomIndices(data) {
+    const randomIndicesArray = [];
+    for (let i = 0; i < 5; i++) {
+      const randomNum = Math.floor(Math.random() * data.length);
+      if (!randomIndicesArray.includes(randomNum))
+        randomIndicesArray.push(randomNum);
+      else i--;
+    }
+    return randomIndicesArray;
+  }
+
+  function getEmojisArray(data) {
+    const pairedEmojisArray = [...data, ...data];
+    for (let i = pairedEmojisArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = pairedEmojisArray[i];
+      pairedEmojisArray[i] = pairedEmojisArray[j];
+      pairedEmojisArray[j] = temp;
+    }
+    
+    return pairedEmojisArray
+
+  }
+
+  function getDataSlice(data) {
+    const randomIndices = getRandomIndices(data);
+
+    const dataSlice = randomIndices.map((index) => data[index]);
+    return dataSlice;
   }
 
   function turnCard() {
@@ -38,7 +70,7 @@ export default function App() {
     <main>
       <h1>Memory</h1>
       {!isGameOn && <Form handleSubmit={startGame} />}
-      {isGameOn && <MemoryCard handleClick={turnCard} data = {emojisData} />}
+      {isGameOn && <MemoryCard handleClick={turnCard} data={emojisData} />}
     </main>
   );
 }
