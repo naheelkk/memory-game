@@ -7,7 +7,7 @@ export default function App() {
 
   async function startGame(e) {
     e.preventDefault();
-
+    //fetching
     try {
       const res = await fetch(
         "https://emojihub.yurace.pro/api/all/category/animals-and-nature"
