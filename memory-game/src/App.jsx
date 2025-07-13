@@ -19,8 +19,8 @@ export default function App() {
         throw new Error("Couldn't fetch 'em");
       }
       const data = await res.json();
-      const dataSlice = getDataSlice(data);
-      const emojisArray = getEmojisArray(dataSlice);
+      const dataSlice = await getDataSlice(data);
+      const emojisArray = await getEmojisArray(dataSlice);
       // console.log(getRandomIndices(data));
 
       setEmojisData(emojisArray);
@@ -42,7 +42,7 @@ export default function App() {
     return randomIndicesArray;
   }
 
-  function getEmojisArray(data) {
+  async function getEmojisArray(data) {
     const pairedEmojisArray = [...data, ...data];
     for (let i = pairedEmojisArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -55,7 +55,7 @@ export default function App() {
 
   }
 
-  function getDataSlice(data) {
+  async function getDataSlice(data) {
     const randomIndices = getRandomIndices(data);
 
     const dataSlice = randomIndices.map((index) => data[index]);

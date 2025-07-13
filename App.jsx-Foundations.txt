@@ -1,0 +1,6 @@
+1. startGame Function, fetch data from api and store as a json
+2. get random indices to load different emojis, called in startGame function
+3. getEmojisArray, shuffle using fisher-yates algorithm, before that array is spread inorder to make duplicates
+4. getDataSlice fucntion to map random indices with the emojis array
+
+Note: on startGame function we are updating emojis data using Hook and passing emojisArray to import
