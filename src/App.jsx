@@ -1,11 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Form from "./components/Form";
 import MemoryCard from "./components/MemoryCard";
 
 export default function App() {
   const [isGameOn, setIsGameOn] = useState(false);
   const [emojisData, setEmojisData] = useState([]);
-  console.log(emojisData);
+  const [selectedCard, setSelectedCard] = useState([]);
+  const [matchedCards, setMatchedCards] = useState([]);
+  const [isGameOver, setIsGameOver] = useState(false);
+
+  console.log(matchedCards);
+
+  useEffect(() => {
+    if (
+      selectedCard.length === 2 &&
+      selectedCard[0].name === selectedCard[1].name
+    ) {
+      setMatchedCards((prevMatchedCards) => [
+        ...prevMatchedCards,
+        ...selectedCard,
+      ]);
+    }
+  }, [selectedCard]);
+
+  useEffect(() => {
+    if (emojisData.length && matchedCards.length === emojisData.length){
+      setIsGameOver(true)
+    } 
+  },[matchedCards]);
+  console.log(isGameOver);
+  
 
   async function startGame(e) {
     e.preventDefault();
@@ -21,7 +45,6 @@ export default function App() {
       const data = await res.json();
       const dataSlice = await getDataSlice(data);
       const emojisArray = await getEmojisArray(dataSlice);
-      // console.log(getRandomIndices(data));
 
       setEmojisData(emojisArray);
 
@@ -50,9 +73,8 @@ export default function App() {
       pairedEmojisArray[i] = pairedEmojisArray[j];
       pairedEmojisArray[j] = temp;
     }
-    
-    return pairedEmojisArray
 
+    return pairedEmojisArray;
   }
 
   async function getDataSlice(data) {
@@ -61,9 +83,23 @@ export default function App() {
     const dataSlice = randomIndices.map((index) => data[index]);
     return dataSlice;
   }
+  console.log(selectedCard);
 
-  function turnCard() {
-    console.log("Memory card clicked");
+  function turnCard(name, index) {
+    // selectedCard.forEach(card=>console.log(card));
+    const selectedCardEntry = selectedCard.find(
+      (emoji) => emoji.index === index
+    );
+
+    if (!selectedCardEntry && selectedCard.length < 2) {
+      setSelectedCard((prevSelectedCard) => [
+        ...prevSelectedCard,
+        { name, index },
+      ]);
+    } else if (!selectedCardEntry && selectedCard.length === 2) {
+      const card = { name, index };
+      setSelectedCard([card]);
+    }
   }
 
   return (
