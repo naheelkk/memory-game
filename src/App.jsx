@@ -9,7 +9,7 @@ export default function App() {
   const [matchedCards, setMatchedCards] = useState([]);
   const [isGameOver, setIsGameOver] = useState(false);
 
-  console.log(matchedCards);
+  console.log(selectedCard);
 
   useEffect(() => {
     if (
@@ -24,12 +24,11 @@ export default function App() {
   }, [selectedCard]);
 
   useEffect(() => {
-    if (emojisData.length && matchedCards.length === emojisData.length){
-      setIsGameOver(true)
-    } 
-  },[matchedCards]);
+    if (emojisData.length && matchedCards.length === emojisData.length) {
+      setIsGameOver(true);
+    }
+  }, [matchedCards]);
   console.log(isGameOver);
-  
 
   async function startGame(e) {
     e.preventDefault();
@@ -106,7 +105,14 @@ export default function App() {
     <main>
       <h1>Memory</h1>
       {!isGameOn && <Form handleSubmit={startGame} />}
-      {isGameOn && <MemoryCard handleClick={turnCard} data={emojisData} />}
+      {isGameOn && (
+        <MemoryCard
+          handleClick={turnCard}
+          data={emojisData}
+          selectedCard={selectedCard}
+          matchedCards={matchedCards}
+        />
+      )}
     </main>
   );
 }
